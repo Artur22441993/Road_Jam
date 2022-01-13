@@ -8,7 +8,7 @@ public class Parser {
 
     public static String parser(String campaignStr, String getPackageName, String AID, String appsFlyerUID){
 
-        //naming
+
         String key;
         String sub6;
         String sub7;
@@ -17,9 +17,7 @@ public class Parser {
         String sub4;
         String sub5;
 
-//Gp88Vp::sub6::sub7::sub2::sub3::sub4::sub5
         String[] str = campaignStr.split("::");
-        Log.d("TAG", ""+str);
         try {
             key = str[0];
         }catch (Exception e){
@@ -64,8 +62,6 @@ public class Parser {
         }
 
         OneSignal.sendTag("sub_app",sub6);
-        //собираем параметры ссылки с конверсией
-        //https://timetowins.work/Gp88Vp?sub2={sub2}&sub3={sub3}&sub4={sub4}&sub5={sub5}&sub6={sub6}&sub7={sub6}&apps_id={apps_id}&ad_id={ad_id}&app_id={app_id}&dev_key={dev_key}
 
         String paramsBuild = "?bundle=" + getPackageName + "&ad_id=" + AID + "&apps_id=" + appsFlyerUID +
                 "&sub6=" + sub6 +
@@ -74,8 +70,7 @@ public class Parser {
                 "&sub3=" + sub3 +
                 "&sub4=" + sub4 +
                 "&sub5=" + sub5;
-        Log.d("qqqq",key);
-        Log.d("qqqq",paramsBuild);
+
 
         return  key + paramsBuild;
     }

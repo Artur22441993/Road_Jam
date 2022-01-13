@@ -62,20 +62,10 @@ public class ApplicationFull extends Application {
         AppsFlyerLib.getInstance().init(Decod.decod(Constants.appsFId), new AppsFlyerConversionListener() {
             @Override
             public void onConversionDataSuccess(Map<String, Object> map) {
-
-                // проверка нейминга
-//                map.put("campaign","sub6::sub7::Gp88Vp::sub2::sub3::sub4::sub5");
-//                String str =map.get("campaign").toString();
-//                params = Parser.parser(str,getPackageName(),AID,appsFlyerUID);
-
-
-                statusAppsFlyer = map.get("af_status").toString();
-
-                if (statusAppsFlyer.equals("Non-organic")){
-                String str =map.get("campaign").toString();
+                statusAppsFlyer = map.get(Decod.decod("YWZfc3RhdHVz")).toString();
+                if (statusAppsFlyer.equals(Decod.decod("Tm9uLW9yZ2FuaWM="))){
+                String str =map.get(Decod.decod("Y2FtcGFpZ24=")).toString();
                 params = Parser.parser(str,getPackageName(),AID,appsFlyerUID);
-                Log.d("user",params);
-                Log.d("user",statusAppsFlyer);
                 }
 
 
@@ -97,4 +87,5 @@ public class ApplicationFull extends Application {
 
 
     }
+
 }

